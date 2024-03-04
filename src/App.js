@@ -1,21 +1,27 @@
 import React, { useState } from "react";
-import "./App.css";
+import "./CalculatorApp.css";
 
 const CalculatorApp = () => {
   const [displayValue, setDisplayValue] = useState("");
   const [result, setResult] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleButtonClick = (value) => {
     if (value === "=") {
-      try {
-        setResult(eval(displayValue));
-      } catch (error) {
-        setResult("Error");
+      if (displayValue.trim() === "") {
+        setErrorMessage("Error");
+      } else {
+        try {
+          setResult(eval(displayValue));
+        } catch (error) {
+          setResult("Error");
+        }
+        setDisplayValue("");
       }
-      setDisplayValue("");
     } else if (value === "C") {
       setDisplayValue("");
       setResult("");
+      setErrorMessage("");
     } else {
       setDisplayValue(displayValue + value);
     }
@@ -23,9 +29,8 @@ const CalculatorApp = () => {
 
   return (
     <div className="calculator-app">
-      <h2>React Calculator</h2>
       <input type="text" value={displayValue} readOnly />
-      <div className="result">{result}</div>
+      <div className="result">{errorMessage || result}</div>
 
       <div className="buttons">
         {[...Array(10).keys(), "+", "-", "*", "/", "="].map((value) => (
@@ -35,7 +40,6 @@ const CalculatorApp = () => {
         ))}
         <button onClick={() => handleButtonClick("C")}>C</button>
       </div>
-      {/* <div className="result">{result}</div> */}
     </div>
   );
 };
